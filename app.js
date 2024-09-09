@@ -14,13 +14,13 @@ function initApp() {
 
     // Initialize TON Connect UI
     tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-        manifestUrl: 'https://your-github-pages-url/tonconnect-manifest.json',
+        manifestUrl: 'https://ozzytheman.github.io/testing/tonconnect-manifest.json',
         buttonRootId: 'ton-connect'
     });
 
     // Set TWA return URL
     tonConnectUI.uiOptions = {
-        twaReturnUrl: `https://t.me/${tg.initDataUnsafe.user.username}`
+        twaReturnUrl: 'https://t.me/mystixapp_bot'
     };
 
     function displayUserInfo(user) {
@@ -32,7 +32,7 @@ function initApp() {
         `;
         if (user.walletAddress) {
             document.getElementById('referralSection').style.display = 'block';
-            document.getElementById('referralLink').value = `https://t.me/your_bot_username?start=${user.id}`;
+            document.getElementById('referralLink').value = `https://t.me/mystixapp_bot?start=${user.id}`;
         }
     }
 
