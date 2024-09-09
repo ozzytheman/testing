@@ -1,23 +1,72 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TG Mini App</title>
-    <script src="https://telegram.org/js/telegram-web-app.js?1"></script>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <div class="container">
-        <h1>TG Mini App</h1>
-        <div id="userInfo"></div>
-        <button id="connectWallet">Connect Wallet</button>
-        <div id="referralSection" style="display:none;">
-            <h2>Refer a Friend</h2>
-            <input type="text" id="referralLink" readonly>
-            <button id="copyReferral">Copy Referral Link</button>
-        </div>
-    </div>
-    <script src="app.js"></script>
-</body>
-</html>
+const tg = window.Telegram.WebApp;
+
+// Ensure the Web App is fully loaded before initializing
+document.addEventListener('DOMContentLoaded', () => {
+    tg.ready();
+    initApp();
+});
+
+function initApp() {
+    tg.expand();
+
+    let userId = tg.initDataUnsafe.user ? tg.initDataUnsafe.user.id : 'Unknown';
+
+    function displayUserInfo(user) {
+        const userInfoElement = document.getElementById('userInfo');
+        userInfoElement.innerHTML = `
+            <p>User ID: ${user.id}</p>
+            <p>Wallet Address: ${user.walletAddress || 'Not connected'}</p>
+            <p>Referrals: ${user.referrals ? user.referrals.length : 0}</p>
+        `;
+        if (user.walletAddress) {
+            document.getElementById('connectWallet').style.display = 'none';
+            document.getElementById('referralSection').style.display = 'block';
+            document.getElementById('referralLink').value = `https://t.me/your_bot_username?start=${user.id}`;
+        }
+    }
+
+    document.getElementById('connectWallet').addEventListener('click', async () => {
+        try {
+            // Check if TON features are available
+            if (!tg.ton) {
+                throw new Error('TON features are not available');
+            }
+
+            // Request TON address
+            const tonAddresses = await tg.ton.requestAccounts();
+            if (tonAddresses.length === 0) {
+                throw new Error('No TON addresses returned');
+            }
+            const walletAddress = tonAddresses[0];
+
+            // In a real app, you'd send this data to your server
+            // For this demo, we'll just update the UI
+            const user = {
+                id: userId,
+                walletAddress: walletAddress,
+                referrals: []
+            };
+            displayUserInfo(user);
+            tg.showPopup({ message: 'Wallet connected successfully!' });
+        } catch (error) {
+            console.error('Failed to connect wallet:', error);
+            tg.showPopup({ 
+                message: `Failed to connect wallet: ${error.message}. Please make sure you're using the Telegram app and have a wallet set up.`
+            });
+        }
+    });
+
+    document.getElementById('copyReferral').addEventListener('click', () => {
+        const referralLink = document.getElementById('referralLink');
+        referralLink.select();
+        document.execCommand('copy');
+        tg.showPopup({ message: 'Referral link copied to clipboard!' });
+    });
+
+    // For demo purposes, we'll display some placeholder data
+    displayUserInfo({
+        id: userId,
+        walletAddress: '',
+        referrals: []
+    });
+}
