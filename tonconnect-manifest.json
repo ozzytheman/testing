@@ -1,7 +1,7 @@
 {
-    "url": "https://ozzytheman.github.io/testing/",
-    "name": "Your TG Mini App Name",
-    "iconUrl": "https://raw.githubusercontent.com/ozzytheman/testing/main/download.png",
-    "termsOfUseUrl": "https://your-github-pages-url/terms-of-use.html",
-    "privacyPolicyUrl": "https://your-github-pages-url/privacy-policy.html"
-  }
+  "url": "https://ozzytheman.github.io/testing/",
+  "name": "Mystix App",
+  "iconUrl": "https://ozzytheman.github.io/testing/icon.png",
+  "termsOfUseUrl": "https://ozzytheman.github.io/testing/terms-of-use.html",
+  "privacyPolicyUrl": "https://ozzytheman.github.io/testing/privacy-policy.html"
+}
