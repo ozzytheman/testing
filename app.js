@@ -1,6 +1,7 @@
 const tg = window.Telegram.WebApp;
 
-// Ensure the Web App is fully loaded before initializing
+let tonConnectUI;
+
 document.addEventListener('DOMContentLoaded', () => {
     tg.ready();
     initApp();
@@ -11,6 +12,17 @@ function initApp() {
 
     let userId = tg.initDataUnsafe.user ? tg.initDataUnsafe.user.id : 'Unknown';
 
+    // Initialize TON Connect UI
+    tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+        manifestUrl: 'https://your-github-pages-url/tonconnect-manifest.json',
+        buttonRootId: 'ton-connect'
+    });
+
+    // Set TWA return URL
+    tonConnectUI.uiOptions = {
+        twaReturnUrl: `https://t.me/${tg.initDataUnsafe.user.username}`
+    };
+
     function displayUserInfo(user) {
         const userInfoElement = document.getElementById('userInfo');
         userInfoElement.innerHTML = `
@@ -19,40 +31,23 @@ function initApp() {
             <p>Referrals: ${user.referrals ? user.referrals.length : 0}</p>
         `;
         if (user.walletAddress) {
-            document.getElementById('connectWallet').style.display = 'none';
             document.getElementById('referralSection').style.display = 'block';
             document.getElementById('referralLink').value = `https://t.me/your_bot_username?start=${user.id}`;
         }
     }
 
-    document.getElementById('connectWallet').addEventListener('click', async () => {
-        try {
-            // Check if TON features are available
-            if (!tg.ton) {
-                throw new Error('TON features are not available');
-            }
-
-            // Request TON address
-            const tonAddresses = await tg.ton.requestAccounts();
-            if (tonAddresses.length === 0) {
-                throw new Error('No TON addresses returned');
-            }
-            const walletAddress = tonAddresses[0];
-
-            // In a real app, you'd send this data to your server
-            // For this demo, we'll just update the UI
+    // Listen for wallet connections
+    tonConnectUI.onStatusChange(wallet => {
+        if (wallet) {
             const user = {
                 id: userId,
-                walletAddress: walletAddress,
+                walletAddress: wallet.account.address,
                 referrals: []
             };
             displayUserInfo(user);
             tg.showPopup({ message: 'Wallet connected successfully!' });
-        } catch (error) {
-            console.error('Failed to connect wallet:', error);
-            tg.showPopup({ 
-                message: `Failed to connect wallet: ${error.message}. Please make sure you're using the Telegram app and have a wallet set up.`
-            });
+        } else {
+            displayUserInfo({ id: userId, walletAddress: '', referrals: [] });
         }
     });
 
@@ -63,10 +58,23 @@ function initApp() {
         tg.showPopup({ message: 'Referral link copied to clipboard!' });
     });
 
-    // For demo purposes, we'll display some placeholder data
+    // Initial display
     displayUserInfo({
         id: userId,
         walletAddress: '',
         referrals: []
     });
+}
+
+// Function to disconnect wallet (if needed)
+async function disconnectWallet() {
+    try {
+        await tonConnectUI.disconnect();
+        tg.showPopup({ message: 'Wallet disconnected successfully!' });
+    } catch (error) {
+        console.error('Failed to disconnect wallet:', error);
+        tg.showPopup({ 
+            message: `Failed to disconnect wallet: ${error.message}`
+        });
+    }
 }

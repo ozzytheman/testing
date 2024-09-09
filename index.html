@@ -5,15 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TG Mini App</title>
     <script src="https://telegram.org/js/telegram-web-app.js?1"></script>
+    <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
         <h1>TG Mini App</h1>
         <div id="userInfo"></div>
-        <button id="connectWallet">Connect Wallet</button>
+        <div id="ton-connect"></div>
         <div id="referralSection" style="display:none;">
-            <h2>Refer a Friend</h2>
+            <h2>Refer Friends</h2>
             <input type="text" id="referralLink" readonly>
             <button id="copyReferral">Copy Referral Link</button>
         </div>
