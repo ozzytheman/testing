@@ -1,0 +1,35 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: var(--tg-theme-bg-color, #f0f2f5);
+    color: var(--tg-theme-text-color, #000000);
+}
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    background-color: var(--tg-theme-secondary-bg-color, white);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+button {
+    background-color: var(--tg-theme-button-color, #0088cc);
+    color: var(--tg-theme-button-text-color, white);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 10px;
+}
+input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border: 1px solid var(--tg-theme-hint-color, #ddd);
+    border-radius: 4px;
+    box-sizing: border-box;
+    background-color: var(--tg-theme-bg-color, white);
+    color: var(--tg-theme-text-color, black);
+}
